@@ -25,10 +25,7 @@ async function findConversation(name) {
       for (const channel of result.channels) {
         if (channel.name === name) {
           conversationId = channel.id;
-  
-          // Print result
           console.log("Found conversation ID: " + conversationId);
-          // Break from for loop
           getHistory(conversationId)
           break;
         }
@@ -50,12 +47,26 @@ async function findConversation(name) {
           });
         
           conversationHistory = result.messages;
-        
-          // Print results
-          //console.log(conversationHistory.length + " messages found in " + channelId);
-          console.log(conversationHistory)
+          conversationHistory.forEach(function(messageObj){
+              if(!messageObj.thread_ts){
+                console.log(messageObj)
+              } else {
+              getThreadedMessages(channelId, messageObj.thread_ts)
+          }})
         }
         catch (error) {
           console.error(error);
+      }
+  }
+
+  async function getThreadedMessages(channelId, threadTimeStamp){
+      let threadedMessages;
+      const result = await client.conversations.replies({
+          channel: channelId,
+          ts : threadTimeStamp
+      })
+      threadedMessages = result.messages;
+      if(threadedMessages.ts != threadTimeStamp){
+          console.log(threadedMessages)
       }
   }
