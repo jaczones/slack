@@ -16,6 +16,16 @@ const client = new WebClient(process.env.SLACK_BOT_TOKEN, {
   logLevel: LogLevel.DEBUG
 });
 
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  
+  readline.question('What is the channel name? ', name => {
+    findConversation(name);
+    readline.close();
+  });
+
 // Find conversation ID using the conversations.list method
 async function findConversation(name) {
     try {
@@ -37,7 +47,7 @@ async function findConversation(name) {
   }
   
   // Find conversation with a specified channel `name`
-  findConversation("proj-channel-export");
+  //findConversation("proj-channel-export");
 
   async function getHistory(channelId) {
       try {
